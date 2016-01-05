@@ -1,0 +1,18 @@
+{
+    "contents" : "require(RSQLite)\nrequire(jsonlite)\n\nurl<-'http://api.idescat.cat/emex/v1/nodes.json?lang=es'\nraw.data <- readLines(url, warn = \"F\", encoding = \"UTF-8\")\nrd <- fromJSON(raw.data)\nremove(raw.data)\n\nmundf<-data.frame(id=integer(), municipio=character(), comarca_id=integer(), stringsAsFactors=FALSE)\n\nn=1\nfor(i in 1:length(rd$fitxes$v$v$content)){\n      for(j in 1:nrow(rd$fitxes$v$v$v[[i]])){\n            mundf[n, 1] = as.integer(rd$fitxes$v$v$v[[i]][j,2])\n            mundf[n, 2] = rd$fitxes$v$v$v[[i]][j,1]\n            mundf[n, 3] = i\n            n<-n + 1}\n}\n\ncomdf<-data.frame(id=integer(), comarca=character(), stringsAsFactors=FALSE)\n\nfor(i in 1:length(rd$fitxes$v$v$content)){\n      comdf[i, 1] = as.integer(rd$fitxes$v$v$id[i])\n      comdf[i, 2] = rd$fitxes$v$v$content[i]\n}\n\ndb <- dbConnect(SQLite(), 'IDESCAT.sqlite')\n\ndbSendQuery(conn = db, \"DROP TABLE IF EXISTS 'Municipios';\")\n\ndbSendQuery(conn = db,\n            \"CREATE TABLE `Municipios` (\n          \t`ID` INTEGER NOT NULL UNIQUE,\n            `Municipio`\tTEXT NOT NULL UNIQUE,\n            `Comarca_ID` INTEGER NOT NULL,\n            PRIMARY KEY(ID)\n            );\")\n\ndbWriteTable(db, 'Municipios', mundf, append = TRUE)\n\ndbSendQuery(conn = db, \"DROP TABLE IF EXISTS 'Comarcas';\")\n\ndbSendQuery(conn = db,\n            \"CREATE TABLE `Comarcas` (\n            `ID` INTEGER NOT NULL UNIQUE,\n            `Comarca` TEXT NOT NULL UNIQUE,\n            PRIMARY KEY(ID)\n);\")\n\ndbWriteTable(db, 'Comarcas', comdf, append = TRUE)\n\ndf<-dbGetQuery(conn = db,\n      \"select Municipios.Municipio, Comarcas.Comarca \n      from Municipios join Comarcas\n      on Municipios.Comarca_ID = Comarcas.ID\n      order by  Comarcas.Comarca;\")\n\ndf$Municipio <- iconv(df$Municipio, \"UTF-8\", \"UTF-8\")\ndf$Comarca <- iconv(df$Comarca, \"UTF-8\", \"UTF-8\")\n\ndbDisconnect(db)\n",
+    "created" : 1451985087943.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3543984380",
+    "id" : "269D3123",
+    "lastKnownWriteTime" : 1451932568,
+    "path" : "~/RProjects/IDESCAT/readnodes.R",
+    "project_path" : "readnodes.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

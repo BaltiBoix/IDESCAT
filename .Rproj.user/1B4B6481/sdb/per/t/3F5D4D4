@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1451988390327.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "3F5D4D4",
+    "lastKnownWriteTime" : 27866499440705583,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "qi5ew2pdmi",
+        "caption" : "rdl",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=rdl&cache_key=qi5ew2pdmi",
+        "displayedObservations" : 1,
+        "environment" : "",
+        "object" : "rdl",
+        "totalObservations" : 1,
+        "variables" : 1027
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
