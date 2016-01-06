@@ -1,0 +1,18 @@
+{
+    "contents" : "require(RSQLite)\nrequire(jsonlite)\nrequire(dplyr)\nrequire(tidyr)\n\nurl<-'http://api.idescat.cat/emex/v1/dades.json?i=f171&lang=es'\nraw.data <- readLines(url, warn = \"F\", encoding = \"UTF-8\")\nrd <- fromJSON(raw.data, simplifyVector = FALSE, flatten = TRUE)\nremove(raw.data)\n\nrdl<-as.data.frame(rd, stringsAsFactors = FALSE)\nrdl<-gather(rdl, 'key', 'value', convert = TRUE)\nrdlist<-strsplit(rdl[,1],'[.]')\n\ndf<-data.frame(id1=character(), id2=character(), id3=character(), id4=character(), \n               id5=character(), id6=character(), id7=character(), id8=character(),\n               id9=character(), value=character(), stringsAsFactors = FALSE)\nfor(i in 1:length(rdlist)){\n      df[i,10]<-rdl[i,2]\n      for(j in 1:9){\n            df[i,j]<-rdlist[[i]][j]\n            if(is.na(df[i,j])){\n                  if(!is.na(as.integer(df[i,j-1]))){\n                        df[i,9]<-as.integer(df[i,j-1])\n                        df[i,j-1]<-NA\n                  }else{\n                        df[i,9]<-0\n                  }\n                  break\n            }\n      }\n}\n\n\ncoldf<- select(filter(df, id2=='cols', id3=='col'), id4, value)\n\ncoldf<-data.frame(municipio_id=as.integer(coldf[seq(2, nrow(coldf), 3), 'value']), \n                  scheme=coldf[seq(3, nrow(coldf), 3), 'value'], \n                  content=coldf[seq(1, nrow(coldf), 3), 'value'], \n                  stringsAsFactors = FALSE)\n\nfactor_id<-as.integer(substring(as.character(select(filter(df, id2=='indicadors', id3=='i', id4=='id'), value)),2))\nvalor<-as.integer(unlist(strsplit(as.character(select(filter(df, id2=='indicadors', id3=='i', id4=='v'), value)), '[,]')))\n\nvaldf<-data.frame(factor_id=rep(factor_id, nrow(coldf)), valor=valor, stringsAsFactors = FALSE)\nvaldf<-cbind(coldf, valdf)\nvaldf<-filter(valdf, !is.na(municipio_id))\n\nmundf<-select(filter(valdf, scheme=='mun'), municipio_id, factor_id, valor)\n\ndb <- dbConnect(SQLite(), 'IDESCAT.sqlite')\n\ndbSendQuery(conn = db,\n            \"CREATE TABLE IF NOT EXISTS `DatosMunicipios` (\n            `MUNICIPIO_ID` INTEGER NOT NULL,\n            `FACTOR_ID` INTEGER NOT NULL,\n            `VALOR` NUMERIC,\n            PRIMARY KEY(MUNICIPIO_ID, FACTOR_ID)\n);\")\n\ndbWriteTable(db, 'DatosMunicipios', mundf, append = TRUE)\n\ndbDisconnect(db)\n\n",
+    "created" : 1452107183859.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1431066104",
+    "id" : "C96357A0",
+    "lastKnownWriteTime" : 1452123625,
+    "path" : "~/RProjects/IDESCAT/loaddata.R",
+    "project_path" : "loaddata.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

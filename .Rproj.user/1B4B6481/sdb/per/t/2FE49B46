@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1452121958098.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2FE49B46",
+    "lastKnownWriteTime" : 27866499440705583,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "v3p5j4ppao",
+        "caption" : "mundf",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=mundf&cache_key=v3p5j4ppao",
+        "displayedObservations" : 948,
+        "environment" : "",
+        "object" : "mundf",
+        "totalObservations" : 948,
+        "variables" : 3
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

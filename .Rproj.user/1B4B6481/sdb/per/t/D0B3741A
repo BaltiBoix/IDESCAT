@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1452117449227.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D0B3741A",
+    "lastKnownWriteTime" : 225686288,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "4tio4pncrz",
+        "caption" : "valdf",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=valdf&cache_key=4tio4pncrz",
+        "displayedObservations" : 991,
+        "environment" : "",
+        "object" : "valdf",
+        "totalObservations" : 991,
+        "variables" : 5
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

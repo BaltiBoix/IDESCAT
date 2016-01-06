@@ -86,26 +86,44 @@ fdf1<-select(filter(df, grepl('^f[0-9]', id7), id8 == 'calt'), id=id7, grupo_id=
 fdf<-left_join(fdf,fdf1)
 remove(fdf1)
 
+gdf<-mutate(gdf, id=as.integer(substring(id,2)))
+tdf<-mutate(tdf, id=as.integer(substring(id,2)), grupo_id=as.integer(substring(grupo_id,2)))
+fdf<-mutate(fdf, id=as.integer(substring(id,2)), grupo_id=as.integer(substring(grupo_id,2)), 
+            tabla_id=as.integer(substring(grupo_id,2)))
+
 db <- dbConnect(SQLite(), 'IDESCAT.sqlite')
 
 dbSendQuery(conn = db, "DROP TABLE IF EXISTS 'Grupos';")
 
 dbSendQuery(conn = db,
             "CREATE TABLE `Grupos` (
-            `ID` TEXT NOT NULL UNIQUE,
+            `ID` INTEGER NOT NULL UNIQUE,
             `C`	TEXT NOT NULL UNIQUE,
             PRIMARY KEY(ID)
 );")
 
 dbWriteTable(db, 'Grupos', gdf, append = TRUE)
 
+dbSendQuery(conn = db, "DROP TABLE IF EXISTS 'Tablas';")
+
+dbSendQuery(conn = db,
+            "CREATE TABLE `Tablas` (
+            `ID` INTEGER NOT NULL UNIQUE,
+            `GRUPO_ID` INTEGER NOT NULL,
+            `C` TEXT NOT NULL,
+            `CALT` TEXT,
+            PRIMARY KEY(ID)
+);")
+
+dbWriteTable(db, 'Tablas', tdf, append = TRUE)
+
 dbSendQuery(conn = db, "DROP TABLE IF EXISTS 'Factores';")
 
 dbSendQuery(conn = db,
             "CREATE TABLE `Factores` (
-            `ID` TEXT NOT NULL UNIQUE,
-            `GRUPO_ID` TEXT NOT NULL,
-            `TABLA_ID` TEXT NOT NULL,
+            `ID` INTEGER NOT NULL UNIQUE,
+            `GRUPO_ID` INTEGER NOT NULL,
+            `TABLA_ID` INTEGER NOT NULL,
             `C` TEXT NOT NULL,
             `CALT` TEXT,
             PRIMARY KEY(ID)
